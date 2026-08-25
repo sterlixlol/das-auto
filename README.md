@@ -70,31 +70,36 @@ Both reports are real output from [the benchmark](./BENCHMARK.md), lightly trimm
 
 ## Why
 
-Half the pages are translated, the build is untested, and you have to be
-somewhere. So you type:
+Hand an agent a half-finished job, say you're leaving, and come back a few
+hours later. Usually the literal task is done and nothing else is. The thing
+you mentioned twice but never actually assigned is still sitting there. Work it
+had no way to check is reported as finished anyway. And the calls it wasn't
+sure about are waiting for you as a list of questions — which is your evening,
+handed straight back.
 
-```
-/das-auto I have to leave now — continue without me.
-```
+None of that is a capability problem. It had your shell the whole time. It
+could have gone looking for a way to check the work, or picked up the thing you
+keep forgetting. Nothing told it that was its job, so it stayed inside the
+task it was given and stopped at the edge.
 
-Claude Code only recognizes a slash command at the *start* of a message, so
-lead with it — the ignition hook matches the same way, for the same reason. You can also just say you're leaving — "I have to head out,
-carry on without me" — and the skill loads on its own from its description.
+This skill moves that edge. Not by making the agent cleverer — by telling it
+the assignment is the floor, and giving it a way to decide what else to touch.
 
-Most agents, handed that, finish the literal task and stop. This one is meant
-to pick up the thing you mentioned but never assigned, go looking for tools
-nobody told it about, and hold back from the actions that stay yours while
-you're unreachable.
+The mechanism is **causal chaining**: for every tool and every action, ask what
+it knocks over three steps downstream. Say the job left on the table is
+translating a page into Spanish. An agent without the pattern translates the
+page. An agent with it goes:
 
-The skill runs on **causal chaining**: for every tool and every action, ask
-what it knocks over three steps downstream.
-
-An agent without that pattern sees *translate the pages* and translates the
-pages. An agent with it sees: translations exist → they need a quality check →
-I can't audit my own writing for my own blind spots → a differently-trained
-model can → is one installed on this machine? → **go look.**
+> the translation exists → somebody has to check it → I can't check my own
+> Spanish with the same mind that wrote it → a differently-trained model
+> could → is one installed on this machine? → **go look.**
 
 That last step is the whole skill. Nobody told it to look. The chain did.
+
+Then, because an agent that will go hunting unsupervised can also go wrong
+unsupervised, every action it invents gets sorted by how far the damage
+reaches before it does any of them — which is [the ledger](#the-ledger), and
+the part worth arguing about.
 
 ## The five phases
 
@@ -194,6 +199,17 @@ your own machine as safe. Fixed.
 <a name="install"></a>
 
 ## Install
+
+You invoke it by leading with the command — Claude Code only recognizes a
+slash command at the *start* of a message, and the ignition hook matches the
+same way for the same reason:
+
+```
+/das-auto I have to leave now — continue without me.
+```
+
+Or just say you're leaving in your own words — "heading out, carry on without
+me" — and the skill loads itself from its description.
 
 **As a plugin** — one line, brings the ignition sequence with it:
 
