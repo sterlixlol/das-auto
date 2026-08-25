@@ -117,13 +117,27 @@ observe the effect; touches only your data; spends nothing (a CLI it just
 discovered counts as spending until it has checked how that bills).
 
 **STAGED — carry to the last inch, then stop** when any hold: irreversible;
-a third-party human is on the receiving end; over an approved cap.
+you're about to contact someone the user never asked you to contact; over an
+approved cap.
 
-Staging isn't skipping. The deploy is built and verified with the command
-written out. The message to your client is drafted with its destination named
-— never typed into a live compose box, where one stray keystroke sends it.
-You come back, read, and fire each one in seconds, with the judgment call
-still yours.
+**DISPATCH — send it yourself** when the user has made clear they want
+someone kept informed — assigned outright, or *harvested from something they
+said and never got around to*: "I keep forgetting to update Nick." That second
+kind is the point. Somebody who keeps forgetting to send an update doesn't
+want a draft, they want it sent; leaving it in a file hands the task back and
+calls that helpfulness.
+
+The strictness lives in **what you say**, never in whether you're allowed to
+speak. Every fact verified to the same standard as the report. The premise
+true *right now* — a message that would have been fine an hour later, sent
+while its premise is still false, doesn't make you early, it makes the user a
+liar to their own client. No dates, promises or apologies they never made. One
+message, then stop. Then the exact text goes in the report, verbatim, so they
+can see what went out under their name.
+
+Fail any of that and it drops to STAGED — not because contacting someone needs
+permission, but because an unsendable message means the work behind it isn't
+finished yet.
 
 ### The report contract (abridged — `SKILL.md` has the exact wording)
 
