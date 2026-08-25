@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  Recruited help completely autonomously in <strong>3 of 3</strong> runs.<br>
+  Found its own reviewers in <strong>3 of 3</strong> runs.<br>
   A bare agent: <strong>0 of 2</strong>. Over-action traps held: <strong>4 of 4</strong>.<br>
   <sub><a href="./BENCHMARK.md">Method, fixtures and the null result →</a></sub>
 </p>
