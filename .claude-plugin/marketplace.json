@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "das-auto",
-      "description": "You left. It kept working. It knew what not to touch.",
+      "description": "Owns the outcome while you're gone, and leaves the irreversible half to you.",
       "source": "./",
       "category": "productivity"
     }

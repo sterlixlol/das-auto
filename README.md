@@ -3,7 +3,7 @@
   Das Auto
 </h1>
 
-<p align="center"><strong>You left. It kept working. It knew what not to touch.</strong></p>
+<p align="center"><strong>Owns the outcome while you're gone — and leaves the irreversible half to you.</strong></p>
 
 <p align="center">
   A Claude Code skill for the moment you walk away.<br>
