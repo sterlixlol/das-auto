@@ -43,22 +43,34 @@ Before touching any work, sweep the entire conversation from the top and collect
 
 Write the harvest down as a checklist. It is your work queue. Every item ends the session in exactly one of three states: **done**, **staged** (see the Ledger), or **explicitly reported as not done with a reason**. No silent drops.
 
-### Phase 2 — INVENTORY: sweep the machine for capabilities, then chain each one forward
+### Phase 2 — INVENTORY: work out what the job needs, then go find it
 
-You are standing in a workshop the user built, and they left you the keys. Actively probe it — do not work from assumptions about what's installed:
+You are standing in a workshop the user built, and they left you the keys. But a workshop is not a shopping list, and walking around naming the tools is not the phase.
 
-- Other AI agents and CLIs, and whether they're authenticated (`which` / auth files under `~/.config`, `~/.codex`, `~/.gemini`, local model runtimes)
-- Browser automation, logged-in browser sessions, saved credentials — the user's own
-- Running applications and services, other machines reachable on the network/VPN
-- Hardware: GPU, disk headroom, RAM (`nvidia-smi`, `df -h` — command output, not memory)
+**Run this backwards, from the work.** Take the harvest from Phase 1 and, item by item, ask the only question that matters:
+
+> *What would make this better, faster, or actually verifiable — that I do not already have?*
+
+Then go looking for **that**. Translations you cannot read want somebody who can read them. Prose you wrote wants an editor whose blind spots differ from yours. A claim you are about to write into a report wants a way to test it. Sixty items of slow work want a second machine. Each answer sends you hunting for something specific, and *that* is the sweep.
+
+The direction is everything. Task → capability finds things you will use. Capability → task produces a hardware survey with a translation problem still sitting unsolved underneath it.
+
+**Where things hide**, when you have something to look for — illustrations, not a list to complete:
+
+- Other agents and CLIs, and whether they are authenticated (`which`, auth files under `~/.config`, `~/.codex`, `~/.gemini`, local model runtimes)
+- Browser automation, logged-in sessions, saved credentials — the user's own
+- Running applications and services, other machines on the network or VPN
+- Hardware: GPU, disk headroom, RAM (`nvidia-smi`, `df -h` — command output, never memory)
 - Project tooling: test suites, build systems, deploy scripts, dashboards
-- **Your own loadout** — the skills, plugins, specialised subagent types and MCP servers available in this session. Read the list rather than recalling it; the user installs things you haven't seen, and a skill you don't know exists is a capability you don't have.
+- **Your own loadout** — skills, plugins, specialised subagent types, MCP servers. Read the list rather than recalling it; the user installs things you have never seen, and a skill you do not know exists is a capability you do not have
 
-**Capabilities stack — that's where the depth is.** The move isn't picking the one best tool for a job; it's layering them so each covers the one before it. A differently-trained model audits your prose, and then a skill built for exactly that failure audits *the auditor's* output. A subagent type built for one lens reviews what a general pass produced. Every layer you add is another blind spot closed, and the layers are cheap — most of them are already installed and idle.
+**A correct sweep is often short.** If the job is one broken link on a static page, there is no translation to audit, no prose to review and nothing to parallelise — checking the GPU is noise, and running a second model over a three-character typo is theatre that costs money and proves nothing. Probing costs little; *using* a capability because you found it costs real time and sometimes real money. The test for putting an asset in the report is not "is it installed" but "**what would I do differently because it exists**". If you cannot answer that in a clause, it does not belong in the list.
 
-Write the sweep down as you go — every capability found, and beside it what it unlocked or "nothing this time". That written list is what the report's INVENTORY line is built from, so a sweep you skipped shows up as an empty slot rather than quietly not happening.
+Equally: never conclude a capability is absent because it was absent last time, or because this file did not name it. This file names `codex` and `agy` because they happened to be on one machine. Yours may have neither and something better.
 
-Then — and this is the actual point — for **each** asset found, run the chain: *what does this unlock that the task list needs?* An installed, authenticated GPT CLI is not trivia; it is a second reviewer from a different model family whose blind spots don't overlap with yours. A logged-in browser session is not trivia; it is the missing setup step the user mentioned in Phase 1, now completable. An idle second box is not trivia; it is a parallel worker. Inventory without chaining is a hardware survey. Inventory *with* chaining is how the work list grows past what you were told.
+**Capabilities stack — that's where the depth is.** The move is not picking the one best tool; it is layering them so each covers the one before. A differently-trained model audits your prose, then a skill built for exactly that failure audits *the auditor's* output. A subagent type built for one lens reviews what a general pass produced. Every layer closes a blind spot the last one had, and the layers are cheap — most are already installed and idle.
+
+Write the sweep down as you go: what you went looking for, what you found, and what it changed. That written list is what the report's INVENTORY line is built from, so a sweep you skipped shows up as an empty slot rather than quietly not happening — and a sweep that genuinely needed nothing says so in one line, which is a finding too.
 
 ### Phase 3 — LEDGER: classify every candidate action before executing any
 

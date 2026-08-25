@@ -101,7 +101,7 @@ That last step is the whole skill. Nobody told it to look. The chain did.
 | Phase | What happens |
 |---|---|
 | **HARVEST** | Re-read the session for everything said but never assigned — "I still need to…", "I keep forgetting to…". Those are work items. |
-| **INVENTORY** | Probe the machine for capabilities: other AI CLIs and whether they're authenticated, logged-in browser sessions, idle hardware, other boxes — *and its own skill/plugin loadout*. Then chain each one forward. |
+| **INVENTORY** | Work out what the job actually needs — an editor for prose it wrote, a reader for a language it can't check, a second machine for slow work — then go hunting for that. Other CLIs, logged-in sessions, idle hardware, its own skill loadout. Run backwards from the task, so a short sweep is a correct sweep. |
 | **LEDGER** | Classify every invented action by blast radius before doing any of it. |
 | **WORK** | Execute like an owner: incremental saves, quality loops that run until two passes find nothing, reviewers other than itself. |
 | **REPORT** | A fixed contract you can trust without redoing the work. |
