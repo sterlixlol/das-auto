@@ -13,8 +13,9 @@ The animation needs four things, and only one of them is terminal-specific:
                controlling terminal, so /dev/tty is unreachable
   geometry     TIOCGWINSZ on that pts
   repaint      SIGWINCH to the process that owns it
-  screen text  the hard one. kitty has `get-text`, tmux has `capture-pane`,
-               and nothing else offers a portable way to read the screen
+  screen text  the hard one. kitty has `get-text`, Konsole has
+               getAllDisplayedText over D-Bus, tmux has `capture-pane`.
+               Alacritty and most others expose no way to read the screen
 
 Without screen text the prompt-box rules can't be located, and painting rows
 blind risks scribbling over a terminal we never read. That degrades to sound
@@ -70,7 +71,30 @@ def geometry(tty):
         os.close(fd)
 
 
-def screen_text():
+def plausible(text, rows, cols):
+    """Does this screen dump actually describe THIS terminal?
+
+    Terminal variables are inherited by child processes, so a Konsole or
+    Alacritty launched from kitty still carries KITTY_LISTEN_ON and will
+    happily return kitty's screen — rules at row 46 of a 28-row window, which
+    paints somewhere that does not exist. Geometry is the tell: the dump has
+    to match the size we measured off our own pts.
+    """
+    if not text:
+        return False
+    lines = text.split("\n")
+    while lines and not lines[-1].strip():
+        lines.pop()
+    if not lines:
+        return False
+    if len(lines) > rows:
+        return False
+    if max((len(l) for l in lines), default=0) > cols + 2:
+        return False
+    return True
+
+
+def screen_text(rows, cols):
     """(text, mode) — however this terminal will let us read itself."""
     sock, win = os.environ.get("KITTY_LISTEN_ON"), os.environ.get("KITTY_WINDOW_ID")
     if sock and win:
@@ -78,16 +102,34 @@ def screen_text():
             out = subprocess.run(
                 ["kitten", "@", "--to", sock, "get-text", "--extent=screen"],
                 capture_output=True, text=True, timeout=4)
-            if out.returncode == 0 and out.stdout:
+            if out.returncode == 0 and plausible(out.stdout, rows, cols):
                 return out.stdout, "kitty"
         except Exception:
             pass
+
+    # Konsole exposes getAllDisplayedText over D-Bus, and sets these two
+    # variables in every child process, so no discovery is needed.
+    svc = os.environ.get("KONSOLE_DBUS_SERVICE")
+    ses = os.environ.get("KONSOLE_DBUS_SESSION")
+    if svc and ses:
+        for qdbus in ("qdbus6", "qdbus", "qdbus-qt6", "qdbus-qt5"):
+            try:
+                out = subprocess.run(
+                    [qdbus, svc, ses, "org.kde.konsole.Session.getAllDisplayedText"],
+                    capture_output=True, text=True, timeout=4)
+            except FileNotFoundError:
+                continue
+            except Exception:
+                break
+            if out.returncode == 0 and plausible(out.stdout, rows, cols):
+                return out.stdout, "konsole"
+            break
 
     if os.environ.get("TMUX"):
         try:
             out = subprocess.run(["tmux", "capture-pane", "-p"],
                                  capture_output=True, text=True, timeout=4)
-            if out.returncode == 0 and out.stdout:
+            if out.returncode == 0 and plausible(out.stdout, rows, cols):
                 return out.stdout, "tmux"
         except Exception:
             pass
@@ -125,10 +167,11 @@ def main():
         emit(MODE="sound")
         return
 
-    text, mode = screen_text()
+    text, mode = screen_text(rows, cols)
     if text:
         top, bot = find_rules(text, cols)
-        if top and bot:
+        # Rules outside the window we measured mean the dump was not ours.
+        if top and bot and 0 < top < bot <= rows:
             emit(MODE=mode, TTY=tty, PID=pid or "", COLS=cols, ROWS=rows,
                  RULE_TOP=top, RULE_BOT=bot)
             return

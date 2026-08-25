@@ -243,8 +243,9 @@ orange cooling back to grey as the words carry on out the far sides.
 It never takes the screen. It paints two rows it located by reading them
 first, and hands them back.
 
-Linux, any terminal. kitty and tmux get the full animation; elsewhere it plays
-the jingle and skips the visual rather than painting rows it couldn't read.
+Linux, any terminal. kitty, Konsole and tmux get the full animation; anywhere
+else it plays the jingle and skips the visual rather than painting rows it
+couldn't read.
 **[How it works, and every knob →](docs/ANIMATION.md)**
 
 ## The uncomfortable part

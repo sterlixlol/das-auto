@@ -38,13 +38,14 @@ Four things are needed, and only one is terminal-specific:
 | Find the pts | walk `/proc/<pid>/fd/{0,1,2}` up the parent chain |
 | Geometry | `TIOCGWINSZ` ioctl on the pts |
 | Force a repaint | `SIGWINCH` to the process that owns it |
-| **Read the screen** | **kitty `get-text` or tmux `capture-pane` — nothing portable** |
+| **Read the screen** | **kitty `get-text`, Konsole `getAllDisplayedText` over D-Bus, or tmux `capture-pane` — nothing portable** |
 
 | Terminal | What you get |
 |---|---|
 | **kitty** | Full animation. Remote control on, and kitty **fully restarted** afterwards — the socket opens at startup, so a config reload won't do it. |
-| **tmux** | Full animation via `capture-pane`. Nothing to configure. |
-| **Anything else** | Jingle only. `DAS_AUTO_BLIND=1` animates the bottom rows anyway, guessing where the box is. |
+| **Konsole** | Full animation, via its D-Bus `getAllDisplayedText`. Nothing to configure; needs `qdbus`. |
+| **tmux** | Full animation via `capture-pane`, in any terminal. Nothing to configure. |
+| **Alacritty, others** | Jingle only — Alacritty's IPC does `create-window` and config, with no way to read the screen. Run tmux inside it for the full thing, or set `DAS_AUTO_BLIND=1` to animate the bottom rows on a guess. |
 
 The rules that sandwich your prompt box move as the box grows, so they're
 located per run by reading the screen. With no way to read it the choice is
@@ -77,3 +78,10 @@ re-times itself to whatever you install.
 while tuning. Every knob (colors, glimmer profile, frame counts, easing) sits
 in clearly marked constants at the top of `assets/intro-band.sh`.
 
+### Why the dump gets checked against the geometry
+
+Terminal variables are inherited. Launch Konsole from kitty and the Konsole
+still carries `KITTY_LISTEN_ON`, so asking "are we in kitty?" answers yes and
+returns *kitty's* screen — which is how an early version put the rules at row
+46 of a 28-row window. Every dump is now checked against the size measured off
+our own pts, and rules landing outside the window are rejected.
