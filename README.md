@@ -6,7 +6,8 @@
 <p align="center"><em>A Claude Code skill for the moment you walk away.</em></p>
 
 
-You're mid-session. The work isn't done. You have to leave. You type:
+Half the pages are translated, the build is untested, and you have to be
+somewhere. So you type:
 
 ```
 I have to leave now! Continue autonomously without me. /das-auto
@@ -14,13 +15,13 @@ I have to leave now! Continue autonomously without me. /das-auto
 
 Most agents, handed that, finish the literal task and stop. This one is meant
 to pick up the thing you mentioned but never assigned, go looking for tools
-nobody told it about, and know which actions aren't its to take while you're
-unreachable.
+nobody told it about, and hold back from the actions that stay yours while
+you're unreachable.
 
 ## The idea
 
-Autonomy isn't "work harder." It's **causal chaining** — asking of every tool,
-asset and action what it knocks over two, three, five steps downstream.
+The skill runs on **causal chaining**: for every tool and every action, ask
+what it knocks over three steps downstream.
 
 An agent without that pattern sees *translate the pages* and translates the
 pages. An agent with it sees: translations exist → they need a quality check →
@@ -33,13 +34,13 @@ That last step is the whole skill. Nobody told it to look. The chain did.
 
 | Phase | What happens |
 |---|---|
-| **HARVEST** | Re-read the session for everything said but never assigned — "I still need to…", "I keep forgetting to…". Those are work items, not small talk. |
+| **HARVEST** | Re-read the session for everything said but never assigned — "I still need to…", "I keep forgetting to…". Those are work items. |
 | **INVENTORY** | Probe the machine for capabilities: other AI CLIs and whether they're authenticated, logged-in browser sessions, idle hardware, other boxes — *and its own skill/plugin loadout*. Then chain each one forward. |
 | **LEDGER** | Classify every invented action by blast radius before doing any of it. |
-| **WORK** | Execute like an owner: incremental saves, quality loops that run until two passes find nothing, reviewers that aren't itself. |
+| **WORK** | Execute like an owner: incremental saves, quality loops that run until two passes find nothing, reviewers other than itself. |
 | **REPORT** | A fixed contract you can trust without redoing the work. |
 
-### The ledger is the important part
+### The ledger
 
 Removing the ceiling on autonomous action also removes it on autonomous
 mistakes. So every action gets classified:
@@ -54,9 +55,9 @@ a third-party human is on the receiving end; over an approved cap.
 
 Staging isn't skipping. The deploy is built and verified with the command
 written out. The message to your client is drafted with its destination named
-— never typed into a live compose box, because a compose box where one stray
-keystroke sends it isn't staging, it's a loaded gun on the table. You come
-back, read, and fire each one in seconds, with the judgment call still yours.
+— never typed into a live compose box, where one stray keystroke sends it.
+You come back, read, and fire each one in seconds, with the judgment call
+still yours.
 
 ### The report contract
 
@@ -73,13 +74,13 @@ NOT DONE:  <item> — <reason> — <what unblocks it>
 ```
 
 Nothing floats between VERIFIED and ASSUMED. Work it couldn't check — a
-language it doesn't read, a device it can't see — is ASSUMED however confident
-it feels, and saying so is the honest half of the job.
+language it doesn't read, a device it can't see — lands in ASSUMED, however
+confident it feels.
 
 ## How it was built
 
 Following [superpowers](https://github.com/anthropics/claude-plugins-official)'
-`writing-skills` methodology — TDD for documentation. Baselines were run
+`writing-skills` methodology, TDD for documentation. Baselines were run
 *without* the skill first, to see what an agent actually does unprompted,
 before a word of it was written.
 
@@ -124,7 +125,7 @@ It resolves the absolute path itself, backs up `settings.json`, leaves your
 other hooks alone, and is safe to run twice. `--remove` unregisters it;
 `--print` shows the JSON without writing anything.
 
-Restart Claude Code afterwards — hooks are loaded at session start.
+Restart Claude Code afterwards; hooks are loaded at session start.
 
 ## The ignition sequence
 
@@ -138,8 +139,8 @@ sides.
 
 Details that turned out to matter:
 
-- **The rules are found, not hardcoded.** Your prompt box grows as you type, so
-  their rows move. Every run locates them from the actual screen contents.
+- **The rules move.** Your prompt box grows as you type, so their rows shift.
+  Every run locates them from the screen contents rather than assuming a row.
 - **It writes to the pts directly.** A hook has no controlling terminal, so
   `/dev/tty` is unreachable; kitty's remote control is asked which device backs
   the window.
@@ -169,14 +170,14 @@ assets/install-sound.sh <any-audio-or-video-file>
 Trims silence, normalizes loudness, caches the duration so the animation
 re-times itself to whatever you install.
 
-`assets/preview.sh` replays the sequence without a real invocation — useful
+`assets/preview.sh` replays the sequence without a real invocation, useful
 while tuning. Every knob (colors, glimmer profile, frame counts, easing) sits
 in clearly marked constants at the top of `assets/intro-band.sh`.
 
 ## Notes
 
-The skill runs heavy — expect a lot of tokens on a real handoff. That's the
-intended profile for a job you're leaving for hours, not a quick question.
+The skill runs heavy: expect a lot of tokens on a real handoff. That's the
+intended profile for a job you're leaving for hours.
 
 The Volkswagen roundel is a bit, not an endorsement, affiliation, or claim on
 anyone's marks.
