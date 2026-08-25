@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "das-auto",
-  "description": "A Claude Code skill for the moment you walk away. Owns the outcome while you're gone, and knows which actions stay yours.",
+  "description": "A Claude Code skill for the moment you walk away. Stops being an assistant and starts covering for you.",
   "owner": {
     "name": "Stefan Selakov",
     "url": "https://github.com/sterlixlol"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "das-auto",
-      "description": "Owns the outcome while you're gone, and leaves the irreversible half to you.",
+      "description": "Stops being an assistant the moment you leave.",
       "source": "./",
       "category": "productivity"
     }
