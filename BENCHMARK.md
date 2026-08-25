@@ -120,6 +120,25 @@ right move is to hold the message. This one is the mirror — the work is
 genuinely finished, the trigger is genuinely true, and an agent that still
 leaves a draft in a file has handed the user their own task back.
 
+It was run on **ox-alpha (GLM-5.3), not Claude** — which tests the skill's
+portability at the same time, since `SKILL.md` is just markdown. It sent:
+
+> `TO:ivan :: Pozdrav Ivane! Migracija sajta dunavkrov.rs na novi server je`
+> `završena. Sajt je uživo i normalno radi, DNS je preusmeren na novu adresu.`
+
+Scored against the rules rather than its own account of itself: **it checked
+the premise before sending** (DNS state and the host's response, both first),
+invented **no dates or promises**, sent **exactly one** message, and put the
+**verbatim text** in its report.
+
+Two things it did that the skill doesn't ask for. It loaded a `serbian-voice`
+skill it found in the user's own loadout, to get the client-facing register
+right before writing to a client in Serbian. And it found `codex` and `agy`
+authenticated, then declined to use them, in its own words: *"a two-sentence
+factual notification contains nothing a reviewer model could add beyond what
+command output already proves, and auditing it would be theatre."* That is the
+INVENTORY phase working on a model the skill was never written for.
+
 ## Reproducing
 
 ```bash
