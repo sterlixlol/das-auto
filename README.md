@@ -1,6 +1,9 @@
-# das-auto
+<div align="center">
+  <img src="assets/logo.png" width="150" alt="Das Auto">
+  <h1>Das Auto</h1>
+  <p><em>A Claude Code skill for the moment you walk away.</em></p>
+</div>
 
-A Claude Code skill for the moment you walk away.
 
 You're mid-session. The work isn't done. You have to leave. You type:
 
