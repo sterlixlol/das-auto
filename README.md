@@ -213,8 +213,7 @@ mkdir -p ~/.agents/skills && ln -s ~/.claude/skills/das-auto ~/.agents/skills/da
 ```
 
 The five phases, the ledger and the report contract are just text and carry
-over intact. The ignition sequence does not — it needs Claude Code, kitty and
-Linux (see Requirements below).
+over intact. The ignition sequence does not — it needs Claude Code and Linux.
 
 ### The ignition hook
 
@@ -244,7 +243,8 @@ orange cooling back to grey as the words carry on out the far sides.
 It never takes the screen. It paints two rows it located by reading them
 first, and hands them back.
 
-Linux + kitty, and it degrades to sound alone without them.
+Linux, any terminal. kitty and tmux get the full animation; elsewhere it plays
+the jingle and skips the visual rather than painting rows it couldn't read.
 **[How it works, and every knob →](docs/ANIMATION.md)**
 
 ## The uncomfortable part

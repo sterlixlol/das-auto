@@ -13,8 +13,10 @@ Details that turned out to matter:
 - **The rules move.** Your prompt box grows as you type, so their rows shift.
   Every run locates them from the screen contents rather than assuming a row.
 - **It writes to the pts directly.** A hook has no controlling terminal, so
-  `/dev/tty` is unreachable; kitty's remote control is asked which device backs
-  the window.
+  `/dev/tty` is unreachable. `probe.py` walks `/proc/<pid>/fd` up the parent
+  chain to find one, which also yields the pid to `SIGWINCH` for the repaint.
+  The hook does that resolution *before* `setsid` detaches the animation —
+  afterwards the parent chain leads nowhere.
 - **One `printf` per frame, inside synchronized output (DEC 2026).** Per-cell
   writes race Claude's own repaint and tear badly.
 - **Everything is eased.** Cubic ease-out on entry, ease-in on exit, ease-in-out
@@ -22,19 +24,41 @@ Details that turned out to matter:
 - **It never takes the whole screen.** An early version used the alternate
   screen buffer and blanked everything — much too much for a 1.2-second joke.
 
-**Requirements.**
+**Requirements.** Linux — it finds your terminal through `/proc` and
+`/dev/pts`, which macOS and Windows don't have. Plus `bash`, `python3`, `awk`,
+`setsid`, `seq`, and one of `pw-play` / `paplay` / `aplay` for sound.
+`install-sound.sh` also wants `ffmpeg` and `ffprobe`.
 
-| | |
+## Terminal support
+
+Four things are needed, and only one is terminal-specific:
+
+| Need | How |
 |---|---|
-| **Linux** | The animation resolves your terminal through `/proc` and `/dev/pts`. macOS and Windows have neither, so nothing fires there. |
-| **Binaries** | `bash` · `python3` · `awk` · `setsid` · `seq` — plus `pw-play`, `paplay` or `aplay` for sound |
-| **Jingle swapping** | `ffmpeg` and `ffprobe`, for `install-sound.sh` only |
-| **[kitty](https://sw.kovidgoyal.net/kitty/)** | with remote control on — and **fully quit and reopened** afterwards, since the socket opens at startup and a config reload won't do it |
+| Find the pts | walk `/proc/<pid>/fd/{0,1,2}` up the parent chain |
+| Geometry | `TIOCGWINSZ` ioctl on the pts |
+| Force a repaint | `SIGWINCH` to the process that owns it |
+| **Read the screen** | **kitty `get-text` or tmux `capture-pane` — nothing portable** |
 
+| Terminal | What you get |
+|---|---|
+| **kitty** | Full animation. Remote control on, and kitty **fully restarted** afterwards — the socket opens at startup, so a config reload won't do it. |
+| **tmux** | Full animation via `capture-pane`. Nothing to configure. |
+| **Anything else** | Jingle only. `DAS_AUTO_BLIND=1` animates the bottom rows anyway, guessing where the box is. |
+
+The rules that sandwich your prompt box move as the box grows, so they're
+located per run by reading the screen. With no way to read it the choice is
+guess or stop — and guessing means painting over rows nobody looked at, so it
+stops and plays the jingle instead.
+
+`probe.py` reports what it picked:
+
+```bash
+python3 assets/probe.py
+# MODE=kitty TTY=/dev/pts/2 PID=230779 COLS=211 ROWS=51 RULE_TOP=46 RULE_BOT=48
 ```
-allow_remote_control socket-only
-listen_on unix:/tmp/kitty-{kitty_pid}
-```
+
+kitty setup, if that's your terminal:
 
 Miss any of it and the visual is impossible — no pts, no rule detection — so
 it falls back to playing the sound alone. Half the joke beats none. On macOS,
