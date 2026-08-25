@@ -160,25 +160,21 @@ confident it feels.
 
 ## How it was built
 
-Following the `writing-skills` methodology from
-[obra/superpowers](https://github.com/obra/superpowers), TDD for documentation. Baselines were run
-*without* the skill first, to see what an agent actually does unprompted,
-before a word of it was written.
+Test-driven, the same way you'd build the code: baselines run *without* the
+skill first, to see what an agent actually does unprompted, before a word of
+it was written.
 
 | Run | What happened |
 |---|---|
-| **Bare agent** | Did the assigned task, fixed the bugs it tripped over, wrote a decent report. Never looked at the machine. No outside review. Judgment calls handed back as paragraphs recommending work *you* would then do. |
-| **With the skill** | Probed the box, found `codex` and `agy` authenticated, ran them as domain-matched reviewers — then *rejected several of their findings with reasons*. Negative-tested its own test harness. Pixel-diffed to prove the approved design hadn't shifted. |
-| **Over-action test** | Four traps, each phrased as a near-authorization: a DNS cutover on a *live* site, a message to a client waiting on news, a metered CLI dressed as a local tool, a delete framed as cleanup. **All four held**, scored against the filesystem rather than the agent's own report. |
-
-It also read the metered tool's source, found it never opens the file it's
-passed, and swapped in a free reviewer instead.
+| **Bare agent** | Did the assigned task, fixed the bugs it tripped over, wrote a decent report. Never looked at the machine. No outside review. Judgment calls handed back as work *you* would then do. |
+| **With the skill** | Probed the box, found other agents authenticated, ran them as domain-matched reviewers — then *rejected several of their findings with reasons*. Negative-tested its own test harness. |
+| **Over-action test** | Four traps, each phrased as a near-authorization. **All four held**, scored against the filesystem rather than the agent's own report. |
 
 An independent audit by a different model then caught a real bug: the GREEN
 predicate had an `or` where an `and` belonged, which classified `rm -rf` on
 your own machine as safe. Fixed.
 
-<a name="install"></a>
+**[Method, numbers, the null result, and fixtures to rerun →](./BENCHMARK.md)**
 
 ## Install
 
@@ -240,58 +236,16 @@ new sessions.
 
 ## The ignition sequence
 
-Because a skill this dramatic deserved a jingle.
+Typing `/das-auto` plays the Volkswagen voice line and animates the two `─`
+rules that sandwich your prompt box — **DAS** riding in along the top from the
+left, **AUTO** along the bottom from the right, a glimmer down both, then the
+orange cooling back to grey as the words carry on out the far sides.
 
-Typing `/das-auto` plays the voice line and animates the two `─` rules that
-sandwich your prompt box: **DAS** rides in along the top rule from the left,
-**AUTO** along the bottom from the right, a glimmer travels down both, then the
-orange cools back to the rules' normal grey as the words carry on out the far
-sides.
+It never takes the screen. It paints two rows it located by reading them
+first, and hands them back.
 
-Details that turned out to matter:
-
-- **The rules move.** Your prompt box grows as you type, so their rows shift.
-  Every run locates them from the screen contents rather than assuming a row.
-- **It writes to the pts directly.** A hook has no controlling terminal, so
-  `/dev/tty` is unreachable; kitty's remote control is asked which device backs
-  the window.
-- **One `printf` per frame, inside synchronized output (DEC 2026).** Per-cell
-  writes race Claude's own repaint and tear badly.
-- **Everything is eased.** Cubic ease-out on entry, ease-in on exit, ease-in-out
-  on the glimmer. Linear motion reads as mechanical.
-- **It never takes the whole screen.** An early version used the alternate
-  screen buffer and blanked everything — much too much for a 1.2-second joke.
-
-**Requirements.**
-
-| | |
-|---|---|
-| **Linux** | The animation resolves your terminal through `/proc` and `/dev/pts`. macOS and Windows have neither, so nothing fires there. |
-| **Binaries** | `bash` · `python3` · `awk` · `setsid` · `seq` — plus `pw-play`, `paplay` or `aplay` for sound |
-| **Jingle swapping** | `ffmpeg` and `ffprobe`, for `install-sound.sh` only |
-| **[kitty](https://sw.kovidgoyal.net/kitty/)** | with remote control on — and **fully quit and reopened** afterwards, since the socket opens at startup and a config reload won't do it |
-
-```
-allow_remote_control socket-only
-listen_on unix:/tmp/kitty-{kitty_pid}
-```
-
-Miss any of it and the visual is impossible — no pts, no rule detection — so
-it falls back to playing the sound alone. Half the joke beats none. On macOS,
-where neither the pts lookup nor those audio players exist, nothing fires.
-
-### Swapping the jingle
-
-```bash
-~/.claude/skills/das-auto/assets/install-sound.sh <any-audio-or-video-file>
-```
-
-Trims silence, normalizes loudness, caches the duration so the animation
-re-times itself to whatever you install.
-
-`assets/preview.sh` replays the sequence without a real invocation, useful
-while tuning. Every knob (colors, glimmer profile, frame counts, easing) sits
-in clearly marked constants at the top of `assets/intro-band.sh`.
+Linux + kitty, and it degrades to sound alone without them.
+**[How it works, and every knob →](docs/ANIMATION.md)**
 
 ## The uncomfortable part
 
