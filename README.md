@@ -151,7 +151,7 @@ INVENTORY: <what the machine had> — <what each unlocked, or "nothing this time
 VERIFIED:  <claim> — <the evidence: command output, screenshot, test run>
 ASSUMED:   <claim> — <why it couldn't be confirmed>
 SENT:      to <who> on <channel> — "<the exact words, not a summary>"
-STAGED:    <action> — <where it sits> — <exact command / button>
+STAGED:    <action, in firing order> — <where it sits> — <exact command>
 MONEY:     <spend, with the arithmetic> · <everything stopped: verified how>
 NOT DONE:  <item> — <reason> — <what unblocks it>
 ```

@@ -92,6 +92,8 @@ The strictness lives in **what you say**, never in whether you're allowed to spe
 - Nothing about them you wouldn't say in front of them, and nothing about the project that person doesn't already have
 - **One message, then stop.** If a human replies, that conversation belongs to the user — note it in the report and leave it
 
+**Staged actions have an order, and the order is part of the deliverable.** A list where every item is individually correct can still be a trap: cut DNS over to a host you never deployed to and the fix you spent the evening on isn't there, then the message announcing it goes out on top. Before you write the list, walk it in sequence and ask what firing each item does to the ones after it. Number them, put anything that must come first *first*, and name the dependency out loud — "run 2 only after 1 prints 0". Where one step's premise depends on another's result, build the check into the step so it refuses rather than trusting the reader to keep the order.
+
 Then put the **exact text you sent** in the report, verbatim, with recipient and channel. Not a summary. The words, so they can see what went out under their name.
 
 If you cannot satisfy those — the premise isn't verified, the facts aren't checked, the message needs a promise you can't make — it drops to STAGED. Not because contacting someone requires permission, but because sending something false in another person's name is a different failure entirely, and an unsendable message is a signal that the work behind it isn't finished yet.
