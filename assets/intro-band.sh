@@ -202,15 +202,16 @@ sleep 0.30
 # frame while the rules eased, and the mismatch broke the illusion.
 while read -r r g b dx ax; do
   frame "$dx" "$ax" "" "${r};${g};${b}" "${r};${g};${b}"; sleep 0.032
-done < <(awk -v dm="$DAS_MARK" -v am="$AUTO_MARK" -v cols="$COLS" -v dl="${#DAS}" 'BEGIN{
+done < <(awk -v dm="$DAS_MARK" -v am="$AUTO_MARK" -v cols="$COLS" -v dl="${#DAS}" -v al="${#AUTO}" 'BEGIN{
   n=18
   for(i=1;i<=n;i++){
     t=i/n
     ec = 1-(1-t)^3        # colour settles
-    ep = t*t*t            # words accelerate away
+    ep = t*t*t            # words accelerate away, each continuing the way it
+                          # was already travelling rather than reversing
     printf "%d %d %d %d %d\n",
       255+(136-255)*ec, 135+(136-135)*ec, 0+(136-0)*ec,
-      dm+((-dl)-dm)*ep, am+((cols+2)-am)*ep }}')
+      dm+((cols+2)-dm)*ep, am+((-al)-am)*ep }}')
 # End on the rules' real colour, never on "def": the terminal's default
 # foreground is white here, and Claude does not repaint these rows after the
 # resize — so the last thing painted is the colour that stays.
