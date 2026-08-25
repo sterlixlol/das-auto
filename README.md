@@ -12,11 +12,10 @@ You're mid-session. The work isn't done. You have to leave. You type:
 I have to leave now! Continue autonomously without me. /das-auto
 ```
 
-Most agents, handed that, will finish the literal task and stop. `das-auto` is
-an attempt to make one behave like somebody who owns the outcome instead —
-who notices the thing you mentioned but never assigned, goes looking for tools
-nobody told it about, and knows which actions are *not* its to take while
-you're unreachable.
+Most agents, handed that, finish the literal task and stop. This one is meant
+to pick up the thing you mentioned but never assigned, go looking for tools
+nobody told it about, and know which actions aren't its to take while you're
+unreachable.
 
 ## The idea
 
@@ -79,7 +78,7 @@ it feels, and saying so is the honest half of the job.
 
 ## How it was built
 
-Following [superpowers](https://github.com/anthropics/claude-code)'
+Following [superpowers](https://github.com/anthropics/claude-plugins-official)'
 `writing-skills` methodology — TDD for documentation. Baselines were run
 *without* the skill first, to see what an agent actually does unprompted,
 before a word of it was written.
@@ -115,20 +114,17 @@ git clone https://github.com/sterlixlol/das-auto ~/.claude/skills/das-auto
 ```
 
 The skill works on its own from there. For the ignition sequence, register the
-hook in `~/.claude/settings.json`:
+hook:
 
-```json
-{
-  "hooks": {
-    "UserPromptSubmit": [
-      { "hooks": [{ "type": "command",
-                    "command": "bash \"$HOME/.claude/skills/das-auto/assets/hook.sh\"" }] }
-    ]
-  }
-}
+```bash
+~/.claude/skills/das-auto/assets/install-hook.sh
 ```
 
-Restart Claude Code. Hooks load at session start.
+It resolves the absolute path itself, backs up `settings.json`, leaves your
+other hooks alone, and is safe to run twice. `--remove` unregisters it;
+`--print` shows the JSON without writing anything.
+
+Restart Claude Code afterwards — hooks are loaded at session start.
 
 ## The ignition sequence
 
