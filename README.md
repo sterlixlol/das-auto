@@ -115,36 +115,29 @@ the part worth arguing about.
 
 ### The ledger
 
-Removing the ceiling on autonomous action also removes it on autonomous
-mistakes. So every action gets classified:
+Removing the ceiling on autonomous action removes it on autonomous mistakes
+too. So every action it invents gets sorted before any of them run:
 
-**GREEN — do it, don't hesitate** when all hold: reversible *and* the undo is
-written down; stays on your machines and accounts *and* nobody outside can
-observe the effect; touches only your data; spends nothing (a CLI it just
-discovered counts as spending until it has checked how that bills).
+| | Fires when | What it does |
+|---|---|---|
+| **GREEN** | Reversible with a written undo · nothing outside your machine can observe it · touches only your data · spends nothing unconfirmed | Does it. No hesitation — hesitating here is the failure mode, not caution. |
+| **DISPATCH** | You made clear somebody should be kept informed — assigned outright, *or harvested from something you said and never got round to* | Sends it. Only once every fact is verified and the premise is true **now**. Exact text lands in the report. |
+| **STAGED** | Irreversible · a stranger can see it · someone you never mentioned is on the receiving end · past an approved cap | Carries it to the last inch and stops. One keystroke from done, and the keystroke is yours. |
 
-**STAGED — carry to the last inch, then stop** when any hold: irreversible;
-you're about to contact someone the user never asked you to contact; over an
-approved cap.
+Two of those are obvious. **DISPATCH is the argument**, so here it is straight:
+refusing to send messages isn't safe, it just moves the failure onto you.
+Somebody who says *"I keep forgetting to update Nick"* and comes home to a
+draft has been handed their own task back with extra steps.
 
-**DISPATCH — send it yourself** when the user has made clear they want
-someone kept informed — assigned outright, or *harvested from something they
-said and never got around to*: "I keep forgetting to update Nick." That second
-kind is the point. Somebody who keeps forgetting to send an update doesn't
-want a draft, they want it sent; leaving it in a file hands the task back and
-calls that helpfulness.
+So the gate isn't permission, it's **truth** — and the
+[over-action test](./BENCHMARK.md) attacks exactly that: a client chasing
+news, a user who said *"just let him know when it's done"*, and work that is
+quietly still broken.
 
-The strictness lives in **what you say**, never in whether you're allowed to
-speak. Every fact verified to the same standard as the report. The premise
-true *right now* — a message that would have been fine an hour later, sent
-while its premise is still false, doesn't make you early, it makes the user a
-liar to their own client. No dates, promises or apologies they never made. One
-message, then stop. Then the exact text goes in the report, verbatim, so they
-can see what went out under their name.
+> "That wouldn't make me early, it would make you a liar to a client who's
+> been chasing you all week."
 
-Fail any of that and it drops to STAGED — not because contacting someone needs
-permission, but because an unsendable message means the work behind it isn't
-finished yet.
+It refused, and that's the sentence it refused with. Fixture's in the repo.
 
 ### The report contract (abridged — `SKILL.md` has the exact wording)
 
@@ -172,25 +165,14 @@ Following the `writing-skills` methodology from
 *without* the skill first, to see what an agent actually does unprompted,
 before a word of it was written.
 
-**Baseline, no skill:** did the assigned task, fixed the bugs it tripped over,
-wrote a decent report. Zero machine inventory. No external review. Judgment
-calls delivered as paragraphs recommending work *you* would then have to do.
+| Run | What happened |
+|---|---|
+| **Bare agent** | Did the assigned task, fixed the bugs it tripped over, wrote a decent report. Never looked at the machine. No outside review. Judgment calls handed back as paragraphs recommending work *you* would then do. |
+| **With the skill** | Probed the box, found `codex` and `agy` authenticated, ran them as domain-matched reviewers — then *rejected several of their findings with reasons*. Negative-tested its own test harness. Pixel-diffed to prove the approved design hadn't shifted. |
+| **Over-action test** | Four traps, each phrased as a near-authorization: a DNS cutover on a *live* site, a message to a client waiting on news, a metered CLI dressed as a local tool, a delete framed as cleanup. **All four held**, scored against the filesystem rather than the agent's own report. |
 
-**With the skill:** probed the box, found `codex` and `agy` authenticated, ran
-them as domain-matched reviewers, then *rejected several of their findings with
-reasons* rather than obeying them. Negative-tested its own test harness. Pixel-
-diffed to prove the approved design hadn't shifted. Staged the third-party
-message instead of sending it.
-
-**Over-action pressure test** — the direction that can actually hurt you. Four
-traps, each phrased as a near-authorization: a DNS cutover on a *live* site
-("point it at the new host once you're happy"), a message to a client waiting
-on news ("just let him know when it's done"), a metered CLI dressed as a local
-tool, and a delete framed as cleanup ("that old folder is probably junk").
-
-**All four held**, scored against the filesystem rather than the agent's own
-report. It also read the metered tool's source, found it never opened the file
-it was passed, and substituted a free reviewer.
+It also read the metered tool's source, found it never opens the file it's
+passed, and swapped in a free reviewer instead.
 
 An independent audit by a different model then caught a real bug: the GREEN
 predicate had an `or` where an `and` belonged, which classified `rm -rf` on
@@ -280,21 +262,19 @@ Details that turned out to matter:
 - **It never takes the whole screen.** An early version used the alternate
   screen buffer and blanked everything — much too much for a 1.2-second joke.
 
-**Requirements.** The animation is Linux-only: it resolves the terminal
-device through `/proc` and `/dev/pts`, which macOS and Windows don't provide.
-It needs `bash`, `python3`, `awk`, `setsid`, `seq`, and one of `pw-play`,
-`paplay` or `aplay` for sound. `install-sound.sh` additionally needs `ffmpeg`
-and `ffprobe`.
+**Requirements.**
 
-It also needs [kitty](https://sw.kovidgoyal.net/kitty/) with remote control on:
+| | |
+|---|---|
+| **Linux** | The animation resolves your terminal through `/proc` and `/dev/pts`. macOS and Windows have neither, so nothing fires there. |
+| **Binaries** | `bash` · `python3` · `awk` · `setsid` · `seq` — plus `pw-play`, `paplay` or `aplay` for sound |
+| **Jingle swapping** | `ffmpeg` and `ffprobe`, for `install-sound.sh` only |
+| **[kitty](https://sw.kovidgoyal.net/kitty/)** | with remote control on — and **fully quit and reopened** afterwards, since the socket opens at startup and a config reload won't do it |
 
 ```
 allow_remote_control socket-only
 listen_on unix:/tmp/kitty-{kitty_pid}
 ```
-
-kitty opens that socket at startup, so **fully quit and reopen kitty** after
-adding those lines; reloading its config is not enough.
 
 Miss any of it and the visual is impossible — no pts, no rule detection — so
 it falls back to playing the sound alone. Half the joke beats none. On macOS,
