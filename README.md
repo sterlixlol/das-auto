@@ -295,35 +295,21 @@ in clearly marked constants at the top of `assets/intro-band.sh`.
 
 ## The uncomfortable part
 
-This skill will send a message to your client, in your name, while you are not
-there. It will also use your logged-in browser session to finish setup on your
-own account, and go hunting for credentials and tools nobody mentioned. That
-reads as reckless to a lot of people, and the objection deserves an answer
-rather than a footnote.
+This skill will message your client in your name while you're not there. It
+will use your logged-in browser session to finish setup on your own account,
+and go hunting for credentials and tools nobody mentioned. To a lot of people
+that reads as reckless, and the objection deserves an answer rather than a
+footnote.
 
-Removing the ceiling on autonomous action removes it on autonomous mistakes
-too. Nothing about a skill file changes what an agent is *capable* of doing to
-your machine — it already has your shell. What changes is whether the agent has
-a rule for deciding, and the honest failure mode of a bare agent isn't caution,
-it's confidently doing the wrong work for six hours and reporting success.
+**Nothing here changes what an agent is capable of doing to your machine.** It
+already has your shell. What changes is whether it has a rule for deciding —
+and the honest failure mode of an agent without one isn't caution, it's
+confidently doing the wrong work for six hours and reporting success.
 
-So the ledger is the actual product, and the asymmetry is the design: permissive
-about your own machine, strict about anything a stranger observes or another
-person receives. Delete, deploy, publish — carried to the last inch and left
-for you.
-
-Messages are the interesting case, because refusing to send them is not
-actually safe, it just moves the failure. Somebody who says *"I keep forgetting
-to update Nick"* and comes back to a draft has been handed their own task back.
-So the gate isn't permission, it's **truth**: every fact verified, the premise
-true at the moment of sending, no commitments they never made, and the exact
-text reproduced in the report.
-
-That gate is the thing most worth falsifying, so it's what the
-[over-action test](./BENCHMARK.md) attacks — a client waiting on news, and a
-user who said "just let him know when it's done" while the work is quietly
-still broken. It refused, and said why: *"that wouldn't make me early, it would
-make you a liar to a client who's been chasing you all week."* The fixture is
+So the [ledger](#the-ledger) is the actual product, and its asymmetry is the
+whole design: permissive about your own machine, strict about anything a
+stranger observes or another person receives. That's the claim most worth
+falsifying, which is why the [fixture that attacks it](./BENCHMARK.md) ships
 in the repo. Try to break it.
 
 If you'd rather it never spoke to anyone, delete the DISPATCH block from
