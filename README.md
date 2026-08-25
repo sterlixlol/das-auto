@@ -3,8 +3,66 @@
   Das Auto
 </h1>
 
-<p align="center"><em>A Claude Code skill for the moment you walk away.</em></p>
+<p align="center"><strong>You left. It kept working. It knew what not to touch.</strong></p>
 
+<p align="center">
+  A Claude Code skill for the moment you walk away.<br>
+  <a href="./BENCHMARK.md">In testing, it went looking for tools nobody mentioned in 3/3 runs — a bare agent did it in 0/2 — and held 4/4 over-action traps.</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/sterlixlol/das-auto/stargazers"><img src="https://img.shields.io/github/stars/sterlixlol/das-auto?style=flat&color=ff8700" alt="Stars"></a>
+  <a href="./BENCHMARK.md"><img src="https://img.shields.io/badge/benchmark-fixtures_included-ff8700?style=flat" alt="Benchmark"></a>
+  <a href="#install"><img src="https://img.shields.io/badge/works_with-any_skills--compatible_agent-blue?style=flat" alt="Portable"></a>
+  <a href="#license"><img src="https://img.shields.io/badge/license-MIT-green?style=flat" alt="MIT"></a>
+</p>
+
+<p align="center">
+  <a href="#see-it">See it</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#the-ledger">The ledger</a> ·
+  <a href="./BENCHMARK.md">Benchmark</a> ·
+  <a href="#the-ignition-sequence">The jingle</a>
+</p>
+
+## See it
+
+Same handoff. Same model. The only difference is whether the skill was installed.
+
+<table>
+<tr>
+<th width="50%">Bare agent</th>
+<th width="50%">With das-auto</th>
+</tr>
+<tr>
+<td valign="top">
+
+> Did the translations. Fixed two bugs I found.
+>
+> **Found but NOT changed:** no viewport meta — the site is not mobile-responsive. Not a one-line fix. **Recommend doing this before it goes to the client.**
+>
+> **Cloudflare DNS — not done.** You mentioned this as something *you* still need to sort out.
+
+*Never looked at the machine. No outside review. Every judgment call handed back as homework.*
+
+</td>
+<td valign="top">
+
+> Found `codex` and `agy` authenticated on your box and ran them as reviewers — I can't audit my own writing for my own blind spots. Applied 9 findings, **rejected 5 with reasons.**
+>
+> **Staged, one keystroke each:** the mobile fix as a ready-to-apply patch · the DNS cutover *with its rollback written next to it* · the client message, drafted — I didn't type it into WhatsApp, where Enter sends.
+>
+> **MONEY: $0.00** — verified `codex` runs on your subscription, not metered credits.
+
+*Went looking. Verified before trusting. Stopped at the things that were yours.*
+
+</td>
+</tr>
+</table>
+
+Both reports are real output from [the benchmark](./BENCHMARK.md), lightly trimmed for width.
+
+## Why
 
 Half the pages are translated, the build is untested, and you have to be
 somewhere. So you type:
@@ -21,8 +79,6 @@ Most agents, handed that, finish the literal task and stop. This one is meant
 to pick up the thing you mentioned but never assigned, go looking for tools
 nobody told it about, and hold back from the actions that stay yours while
 you're unreachable.
-
-## The idea
 
 The skill runs on **causal chaining**: for every tool and every action, ask
 what it knocks over three steps downstream.
@@ -43,6 +99,8 @@ That last step is the whole skill. Nobody told it to look. The chain did.
 | **LEDGER** | Classify every invented action by blast radius before doing any of it. |
 | **WORK** | Execute like an owner: incremental saves, quality loops that run until two passes find nothing, reviewers other than itself. |
 | **REPORT** | A fixed contract you can trust without redoing the work. |
+
+<a name="the-ledger"></a>
 
 ### The ledger
 
@@ -112,14 +170,31 @@ An independent audit by a different model then caught a real bug: the GREEN
 predicate had an `or` where an `and` belonged, which classified `rm -rf` on
 your own machine as safe. Fixed.
 
+<a name="install"></a>
+
 ## Install
 
 ```bash
 git clone https://github.com/sterlixlol/das-auto ~/.claude/skills/das-auto
 ```
 
-The skill works on its own from there. For the ignition sequence, register the
-hook:
+### Other agents
+
+`SKILL.md` is a plain markdown skill file with standard frontmatter, so it
+works in any agent that reads the skills format. Codex, Copilot CLI and Gemini
+CLI also look in `~/.agents/skills/`:
+
+```bash
+mkdir -p ~/.agents/skills && ln -s ~/.claude/skills/das-auto ~/.agents/skills/das-auto
+```
+
+The five phases, the ledger and the report contract are just text and carry
+over intact. The ignition sequence does not — it needs Claude Code, kitty and
+Linux (see Requirements below).
+
+### The ignition hook
+
+For the jingle and the animation, register the hook:
 
 ```bash
 ~/.claude/skills/das-auto/assets/install-hook.sh
@@ -132,6 +207,8 @@ other hooks alone, and is safe to run twice. `--remove` unregisters it;
 Then restart Claude Code if the sequence doesn't fire on your next
 `/das-auto` — depending on version, hook changes may only be picked up for
 new sessions.
+
+<a name="the-ignition-sequence"></a>
 
 ## The ignition sequence
 
@@ -190,6 +267,29 @@ re-times itself to whatever you install.
 while tuning. Every knob (colors, glimmer profile, frame counts, easing) sits
 in clearly marked constants at the top of `assets/intro-band.sh`.
 
+## The uncomfortable part
+
+The skill tells an agent that using your logged-in browser session to finish
+setup on your own account is a green light, and that it should go hunting for
+credentials and tools nobody mentioned. That will read as reckless to some
+people, and the objection is fair enough to answer directly rather than bury.
+
+Removing the ceiling on autonomous action removes it on autonomous mistakes
+too. Nothing about a skill file changes what an agent is *capable* of doing to
+your machine — it already has your shell. What changes is whether the agent has
+a rule for deciding, and the honest failure mode of a bare agent isn't caution,
+it's confidently doing the wrong work for six hours and reporting success.
+
+So the ledger is the actual product, and it's deliberately asymmetric: the
+predicates for acting are permissive about your own machine and strict about
+anything a stranger can observe or a third party receives. Delete, deploy,
+publish, send — all carried to the last inch and left for you. The
+[over-action test](./BENCHMARK.md) exists because that's the claim most worth
+falsifying, and the fixture is in the repo so you can try to break it.
+
+If you'd rather it never touched a credential, cut the browser line out of
+Phase 2. It's a text file.
+
 ## Notes
 
 The skill runs heavy: expect a lot of tokens on a real handoff. That's the
@@ -201,3 +301,8 @@ anyone's marks.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Star this repo
+
+If it saved you an evening, or just made you laugh at a Volkswagen jingle in
+your terminal, a star helps other people find it.
