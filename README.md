@@ -54,7 +54,9 @@ Same handoff. Same model. The only difference is whether the skill was installed
 
 > Found `codex` and `agy` authenticated on your box and ran them as reviewers — I can't audit my own writing for my own blind spots. Applied 9 findings, **rejected 5 with reasons.**
 >
-> **Staged, one keystroke each:** the mobile fix as a ready-to-apply patch · the DNS cutover *with its rollback written next to it* · the client message, drafted — I didn't type it into WhatsApp, where Enter sends.
+> **Sent Nick his update** — you kept saying you'd forgotten to. It went on WhatsApp, where you two already talk, after the translations actually landed. Exact text below. No date for the DNS work, because you never gave me one to give.
+>
+> **Staged, one keystroke each:** the mobile fix as a ready-to-apply patch · the DNS cutover *with its rollback written next to it*.
 >
 > **MONEY: $0.00** — verified `codex` runs on your subscription, not metered credits.
 
@@ -148,6 +150,7 @@ finished yet.
 INVENTORY: <what the machine had> — <what each unlocked, or "nothing this time">
 VERIFIED:  <claim> — <the evidence: command output, screenshot, test run>
 ASSUMED:   <claim> — <why it couldn't be confirmed>
+SENT:      to <who> on <channel> — "<the exact words, not a summary>"
 STAGED:    <action> — <where it sits> — <exact command / button>
 MONEY:     <spend, with the arithmetic> · <everything stopped: verified how>
 NOT DONE:  <item> — <reason> — <what unblocks it>
@@ -296,10 +299,11 @@ in clearly marked constants at the top of `assets/intro-band.sh`.
 
 ## The uncomfortable part
 
-The skill tells an agent that using your logged-in browser session to finish
-setup on your own account is a green light, and that it should go hunting for
-credentials and tools nobody mentioned. That will read as reckless to some
-people, and the objection is fair enough to answer directly rather than bury.
+This skill will send a message to your client, in your name, while you are not
+there. It will also use your logged-in browser session to finish setup on your
+own account, and go hunting for credentials and tools nobody mentioned. That
+reads as reckless to a lot of people, and the objection deserves an answer
+rather than a footnote.
 
 Removing the ceiling on autonomous action removes it on autonomous mistakes
 too. Nothing about a skill file changes what an agent is *capable* of doing to
@@ -307,15 +311,27 @@ your machine — it already has your shell. What changes is whether the agent ha
 a rule for deciding, and the honest failure mode of a bare agent isn't caution,
 it's confidently doing the wrong work for six hours and reporting success.
 
-So the ledger is the actual product, and it's deliberately asymmetric: the
-predicates for acting are permissive about your own machine and strict about
-anything a stranger can observe or a third party receives. Delete, deploy,
-publish, send — all carried to the last inch and left for you. The
-[over-action test](./BENCHMARK.md) exists because that's the claim most worth
-falsifying, and the fixture is in the repo so you can try to break it.
+So the ledger is the actual product, and the asymmetry is the design: permissive
+about your own machine, strict about anything a stranger observes or another
+person receives. Delete, deploy, publish — carried to the last inch and left
+for you.
 
-If you'd rather it never touched a credential, cut the browser line out of
-Phase 2. It's a text file.
+Messages are the interesting case, because refusing to send them is not
+actually safe, it just moves the failure. Somebody who says *"I keep forgetting
+to update Nick"* and comes back to a draft has been handed their own task back.
+So the gate isn't permission, it's **truth**: every fact verified, the premise
+true at the moment of sending, no commitments they never made, and the exact
+text reproduced in the report.
+
+That gate is the thing most worth falsifying, so it's what the
+[over-action test](./BENCHMARK.md) attacks — a client waiting on news, and a
+user who said "just let him know when it's done" while the work is quietly
+still broken. It refused, and said why: *"that wouldn't make me early, it would
+make you a liar to a client who's been chasing you all week."* The fixture is
+in the repo. Try to break it.
+
+If you'd rather it never spoke to anyone, delete the DISPATCH block from
+`SKILL.md`. It's a text file.
 
 ## Notes
 
