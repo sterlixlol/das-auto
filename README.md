@@ -10,8 +10,12 @@ Half the pages are translated, the build is untested, and you have to be
 somewhere. So you type:
 
 ```
-I have to leave now! Continue autonomously without me. /das-auto
+/das-auto I have to leave now — continue without me.
 ```
+
+Claude Code only recognizes a slash command at the *start* of a message, so
+lead with it. You can also just say you're leaving — "I have to head out,
+carry on without me" — and the skill loads on its own from its description.
 
 Most agents, handed that, finish the literal task and stop. This one is meant
 to pick up the thing you mentioned but never assigned, go looking for tools
@@ -59,7 +63,7 @@ written out. The message to your client is drafted with its destination named
 You come back, read, and fire each one in seconds, with the judgment call
 still yours.
 
-### The report contract
+### The report contract (abridged — `SKILL.md` has the exact wording)
 
 ```
 <Complete | Parked | Blocked>. While you were out, here's what I did:
@@ -79,8 +83,8 @@ confident it feels.
 
 ## How it was built
 
-Following [superpowers](https://github.com/anthropics/claude-plugins-official)'
-`writing-skills` methodology, TDD for documentation. Baselines were run
+Following the `writing-skills` methodology from
+[obra/superpowers](https://github.com/obra/superpowers), TDD for documentation. Baselines were run
 *without* the skill first, to see what an agent actually does unprompted,
 before a word of it was written.
 
@@ -125,7 +129,9 @@ It resolves the absolute path itself, backs up `settings.json`, leaves your
 other hooks alone, and is safe to run twice. `--remove` unregisters it;
 `--print` shows the JSON without writing anything.
 
-Restart Claude Code afterwards; hooks are loaded at session start.
+Then restart Claude Code if the sequence doesn't fire on your next
+`/das-auto` — depending on version, hook changes may only be picked up for
+new sessions.
 
 ## The ignition sequence
 
@@ -151,20 +157,30 @@ Details that turned out to matter:
 - **It never takes the whole screen.** An early version used the alternate
   screen buffer and blanked everything — much too much for a 1.2-second joke.
 
-Requires [kitty](https://sw.kovidgoyal.net/kitty/) with remote control enabled:
+**Requirements.** The animation is Linux-only: it resolves the terminal
+device through `/proc` and `/dev/pts`, which macOS and Windows don't provide.
+It needs `bash`, `python3`, `awk`, `setsid`, `seq`, and one of `pw-play`,
+`paplay` or `aplay` for sound. `install-sound.sh` additionally needs `ffmpeg`
+and `ffprobe`.
+
+It also needs [kitty](https://sw.kovidgoyal.net/kitty/) with remote control on:
 
 ```
 allow_remote_control socket-only
 listen_on unix:/tmp/kitty-{kitty_pid}
 ```
 
-Without it the visual is impossible — no pts, no rule detection — so it plays
-the sound and skips the animation. Half the joke beats none.
+kitty opens that socket at startup, so **fully quit and reopen kitty** after
+adding those lines; reloading its config is not enough.
+
+Miss any of it and the visual is impossible — no pts, no rule detection — so
+it falls back to playing the sound alone. Half the joke beats none. On macOS,
+where neither the pts lookup nor those audio players exist, nothing fires.
 
 ### Swapping the jingle
 
 ```bash
-assets/install-sound.sh <any-audio-or-video-file>
+~/.claude/skills/das-auto/assets/install-sound.sh <any-audio-or-video-file>
 ```
 
 Trims silence, normalizes loudness, caches the duration so the animation

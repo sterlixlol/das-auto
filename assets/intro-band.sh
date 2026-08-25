@@ -176,32 +176,40 @@ printf '\0337\033[?25l' >&3
 DAS_MARK=$(( (COLS - ${#DAS}) / 2 ))
 AUTO_MARK=$(( DAS_MARK - 1 ))
 
+# Pace the whole sequence off the jingle actually installed. install-sound.sh
+# caches its duration; a longer clip stretches the dwells rather than leaving
+# the animation finishing while the voice is still talking.
+DUR=$(cat "$DIR/dasauto.dur" 2>/dev/null || echo 1.24)
+SCALE=$(awk -v d="$DUR" 'BEGIN{s=d/1.24; if(s<0.6)s=0.6; if(s>3)s=3; printf "%.3f", s}')
+dwell() { awk -v b="$1" -v s="$SCALE" 'BEGIN{printf "%.4f", b*s}'; }
+SLIDE_T=$(dwell 0.014); GLIM_T=$(dwell 0.013); FADE_T=$(dwell 0.032); HOLD_T=$(dwell 0.30)
+
 play_sound
 
 # DAS rides in from the left along the top rule.
 while read -r x; do
-  frame "$x" $(( COLS + 2 )) "" "$ORANGE"; sleep 0.014
+  frame "$x" $(( COLS + 2 )) "" "$ORANGE"; sleep "$SLIDE_T"
 done < <(ease_out $(( -${#DAS} )) "$DAS_MARK" 24)
 
 # AUTO rides in from the right along the bottom rule.
 while read -r x; do
-  frame "$DAS_MARK" "$x" "" "$ORANGE"; sleep 0.014
+  frame "$DAS_MARK" "$x" "" "$ORANGE"; sleep "$SLIDE_T"
 done < <(ease_out "$COLS" "$AUTO_MARK" 24)
 
 # Glimmer travels down both rules.
 while read -r g; do
-  frame "$DAS_MARK" "$AUTO_MARK" "$g" "$ORANGE"; sleep 0.013
+  frame "$DAS_MARK" "$AUTO_MARK" "$g" "$ORANGE"; sleep "$GLIM_T"
 done < <(ease_in_out -8 $(( COLS + 8 )) 46)
 
 frame "$DAS_MARK" "$AUTO_MARK" "" "$ORANGE"
-sleep 0.30
+sleep "$HOLD_T"
 
 # Exit: the orange cools to #888888 — the colour Claude actually draws these
 # rules in — while the words ride back out the way they came. Both curves run
 # together so nothing snaps: earlier versions dropped the letters in a single
 # frame while the rules eased, and the mismatch broke the illusion.
 while read -r r g b dx ax; do
-  frame "$dx" "$ax" "" "${r};${g};${b}" "${r};${g};${b}"; sleep 0.032
+  frame "$dx" "$ax" "" "${r};${g};${b}" "${r};${g};${b}"; sleep "$FADE_T"
 done < <(awk -v dm="$DAS_MARK" -v am="$AUTO_MARK" -v cols="$COLS" -v dl="${#DAS}" -v al="${#AUTO}" 'BEGIN{
   n=18
   for(i=1;i<=n;i++){
