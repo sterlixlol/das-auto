@@ -1,8 +1,9 @@
-<div align="center">
-  <img src="assets/roundel.png" width="200" alt="Das Auto">
-  <h1>Das Auto</h1>
-  <p><em>A Claude Code skill for the moment you walk away.</em></p>
-</div>
+<h1 align="center">
+  <img src="assets/logo.png" width="150" alt=""><br>
+  Das Auto
+</h1>
+
+<p align="center"><em>A Claude Code skill for the moment you walk away.</em></p>
 
 
 You're mid-session. The work isn't done. You have to leave. You type:
