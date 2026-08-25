@@ -6,12 +6,16 @@
 <p align="center"><strong>Owns the outcome while you're gone — and leaves the irreversible half to you.</strong></p>
 
 <p align="center">
-  A Claude Code skill for the moment you walk away.<br>
-  <a href="./BENCHMARK.md">In testing, it went looking for tools nobody mentioned in 3/3 runs — a bare agent did it in 0/2 — and held 4/4 over-action traps.</a>
+  A Claude Code skill for the moment you walk away.
 </p>
 
 <p align="center">
-  <a href="https://github.com/sterlixlol/das-auto/stargazers"><img src="https://img.shields.io/github/stars/sterlixlol/das-auto?style=flat&color=ff8700" alt="Stars"></a>
+  Went hunting for tools nobody mentioned in <strong>3 of 3</strong> runs.<br>
+  A bare agent: <strong>0 of 2</strong>. Over-action traps held: <strong>4 of 4</strong>.<br>
+  <sub><a href="./BENCHMARK.md">Method, fixtures and the null result →</a></sub>
+</p>
+
+<p align="center">
   <a href="./BENCHMARK.md"><img src="https://img.shields.io/badge/benchmark-fixtures_included-ff8700?style=flat" alt="Benchmark"></a>
   <a href="#install"><img src="https://img.shields.io/badge/works_with-any_skills--compatible_agent-blue?style=flat" alt="Portable"></a>
   <a href="#license"><img src="https://img.shields.io/badge/license-MIT-green?style=flat" alt="MIT"></a>
