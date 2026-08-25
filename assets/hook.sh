@@ -4,18 +4,24 @@
 # Runs on EVERY prompt, so the common path must be near-free: one grep that
 # rejects anything without the string at all, and only then a real JSON parse.
 #
-# Matching is deliberately loose about POSITION. The command is normally typed
-# at the END of a sentence — "I have to leave now! Continue without me.
-# /das-auto" — which is how every example in the skill reads. An earlier
-# version anchored to the start of the prompt to avoid firing when someone
-# merely mentioned the command; that silenced the primary use case entirely.
-# An extra jingle when discussing it is a far cheaper mistake than the command
-# not working when invoked.
+# Two things this gets right the hard way:
+#
+# 1. The match is ANCHORED to the start of the prompt. Claude Code only
+#    recognizes a slash command at the start of a message anyway, so matching
+#    anywhere buys nothing — and it costs a great deal: invoking the command
+#    submits both the raw text and the expanded skill body, and the skill body
+#    quotes "/das-auto" in six worked examples. An unanchored match fires on
+#    both and plays the jingle twice.
+#
+# 2. A debounce lock, because #1 is a fix for the duplicate path I could see.
+#    Any second trigger within DEBOUNCE seconds is dropped, so a duplicate
+#    event from somewhere else can't double up either.
+
+DEBOUNCE=5
 
 PAYLOAD=$(cat)
 
-# Fast reject: no occurrence anywhere, nothing to do. Keeps the cost of the
-# 99.9% case down to a single grep.
+# Fast reject: no occurrence at all, nothing to do.
 printf '%s' "$PAYLOAD" | grep -q 'das-auto' || exit 0
 
 # Precise check on the prompt field only — the payload also carries cwd and
@@ -26,8 +32,17 @@ try:
     prompt = json.load(sys.stdin).get("prompt", "")
 except Exception:
     sys.exit(1)
-sys.exit(0 if re.search(r"(?:^|\s)/das-auto\b", prompt) else 1)
+sys.exit(0 if re.match(r"\s*/das-auto\b", prompt) else 1)
 ' || exit 0
+
+LOCK="${TMPDIR:-/tmp}/.das-auto-fired-$(id -u)"
+NOW=$(date +%s)
+if [ -f "$LOCK" ]; then
+  LAST=$(cat "$LOCK" 2>/dev/null || echo 0)
+  case "$LAST" in ''|*[!0-9]*) LAST=0 ;; esac
+  [ $(( NOW - LAST )) -lt "$DEBOUNCE" ] && exit 0
+fi
+printf '%s' "$NOW" > "$LOCK"
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 setsid bash "$DIR/intro-band.sh" >/dev/null 2>&1 < /dev/null &

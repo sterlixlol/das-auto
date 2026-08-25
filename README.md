@@ -72,7 +72,7 @@ somewhere. So you type:
 ```
 
 Claude Code only recognizes a slash command at the *start* of a message, so
-lead with it. You can also just say you're leaving — "I have to head out,
+lead with it — the ignition hook matches the same way, for the same reason. You can also just say you're leaving — "I have to head out,
 carry on without me" — and the skill loads on its own from its description.
 
 Most agents, handed that, finish the literal task and stop. This one is meant
