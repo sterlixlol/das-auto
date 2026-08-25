@@ -7,7 +7,8 @@
 # terminal's normal rule grey and Claude repaints its own box.
 #
 # The rules are FOUND, not hardcoded: the prompt box grows as the user types,
-# so their rows move. Their real positions come from the screen contents.
+# so their rows move. probe.py reads the screen to locate them, by whatever
+# route this terminal offers.
 #
 # Two things keep it from tearing:
 #   * every frame is one string written with ONE printf — per-cell writes
@@ -26,9 +27,9 @@ play_sound() {
 }
 
 # Where to draw, and whether we may. probe.py handles the terminal-specific
-# part: kitty and tmux can both be asked to read their own screen, anything
-# else cannot, and painting rows we never read is not something to do to
-# somebody's terminal uninvited.
+# part: kitty, Konsole and tmux can each be asked to read their own screen,
+# most others cannot, and painting rows we never read is not something to do
+# to somebody's terminal uninvited.
 command -v python3 >/dev/null 2>&1 || { play_sound; exit 0; }
 eval "$(python3 "$DIR/probe.py" 2>/dev/null)"
 
@@ -68,13 +69,6 @@ restore() {
   exec 3>&-
 }
 trap restore EXIT INT TERM
-
-play_sound() {
-  [ -f "$SND" ] || return 0
-  for p in pw-play paplay aplay; do
-    command -v "$p" >/dev/null 2>&1 && { "$p" "$SND" >/dev/null 2>&1 & return 0; }
-  done
-}
 
 RULE=$(printf '─%.0s' $(seq 1 "$COLS"))
 BEGIN='\033[?2026h'; END='\033[?2026l'
