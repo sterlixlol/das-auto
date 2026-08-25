@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo.png" width="150" alt="Das Auto">
+  <img src="assets/roundel.png" width="200" alt="Das Auto">
   <h1>Das Auto</h1>
   <p><em>A Claude Code skill for the moment you walk away.</em></p>
 </div>
