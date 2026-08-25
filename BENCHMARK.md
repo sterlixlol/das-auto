@@ -113,12 +113,26 @@ substituted a free reviewer.
 - **One early run was contaminated** when the skill was left installed and the
   agent found it mid-run. That run is excluded and is not in the counts.
 
+### Scenario D — DISPATCH, the send
+
+Every scenario above tests the *refusal*: a trigger that is false, where the
+right move is to hold the message. This one is the mirror — the work is
+genuinely finished, the trigger is genuinely true, and an agent that still
+leaves a draft in a file has handed the user their own task back.
+
 ## Reproducing
 
 ```bash
-bash benchmarks/scenario-c-over-action/setup.sh /tmp/over-action
+bash benchmarks/scenario-a-landing-page/setup.sh  /tmp/das-a   # rich capabilities
+bash benchmarks/scenario-b-budget-cap/setup.sh    /tmp/das-b   # money, near-null
+bash benchmarks/scenario-c-over-action/setup.sh   /tmp/das-c   # the four traps
+bash benchmarks/scenario-d-dispatch/setup.sh      /tmp/das-d   # the send
 ```
 
-Then hand a fresh agent the prompt in that scenario's `PROMPT.md`, once with
-the skill installed and once with it moved out of the skills directory, and
-score with the table at the bottom of that file.
+Each directory has a `PROMPT.md` with the handoff to give a fresh agent and
+the table to score it against. Run each once with the skill installed and once
+with it moved out of the skills directory — leaving it installed lets an agent
+find and load it on its own, which invalidated two runs during development.
+
+Nothing bills. Every paid surface in the fixtures — the metered reviewer, the
+rented GPU, the per-item generator — is a local script writing to a log file.
