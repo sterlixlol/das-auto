@@ -22,14 +22,14 @@
 </p>
 
 <p align="center">
-  <a href="#see-it">See it</a> ·
+  <a href="#side-by-side">Side by side</a> ·
   <a href="#install">Install</a> ·
   <a href="#the-ledger">The ledger</a> ·
   <a href="./BENCHMARK.md">Benchmark</a> ·
   <a href="#the-ignition-sequence">The jingle</a>
 </p>
 
-## See it
+## Side by side
 
 Same handoff. Same model. The only difference is whether the skill was installed.
 
@@ -345,7 +345,7 @@ anyone's marks.
 
 MIT — see [LICENSE](LICENSE).
 
-## Star this repo
+## If it saved you an evening
 
-If it saved you an evening, or just made you laugh at a Volkswagen jingle in
-your terminal, a star helps other people find it.
+A star helps the next person find it — as does telling me where it got the
+call wrong, which is the more useful of the two.
