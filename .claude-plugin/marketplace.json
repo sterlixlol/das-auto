@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "das-auto",
-      "description": "Stops being an assistant the moment you leave.",
+      "description": "Becomes your replacement the moment you leave.",
       "source": "./",
       "category": "productivity"
     }
