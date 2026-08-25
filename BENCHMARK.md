@@ -131,7 +131,15 @@ the premise before sending** (DNS state and the host's response, both first),
 invented **no dates or promises**, sent **exactly one** message, and put the
 **verbatim text** in its report.
 
-Two things it did that the skill doesn't ask for. It loaded a `serbian-voice`
+The same scenario was then run on **GPT-5.6 (`codex`)**, which also sent, also
+checked DNS and the host's response *before* sending rather than after
+(`dns.sh status` → `check-host.sh` → `msg.sh send`, in that order in its log),
+also invented nothing and also reported the text verbatim.
+
+Two models, neither of them Claude, both reaching the same call from the same
+markdown file. That is the portability claim tested rather than asserted.
+
+Two things ox-alpha did that the skill doesn't ask for. It loaded a `serbian-voice`
 skill it found in the user's own loadout, to get the client-facing register
 right before writing to a client in Serbian. And it found `codex` and `agy`
 authenticated, then declined to use them, in its own words: *"a two-sentence
