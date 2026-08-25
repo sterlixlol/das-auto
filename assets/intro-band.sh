@@ -18,62 +18,29 @@
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SND="$DIR/dasauto.wav"
 
-kq() { kitten @ --to "$KITTY_LISTEN_ON" "$@" 2>/dev/null; }
-
-# Without kitty remote control there is no way to find the pts or the rule
-# rows, so the visual is impossible — but the jingle still works, and half
-# the joke is better than none.
-bail_with_sound() {
+play_sound() {
+  [ -f "$SND" ] || return 0
   for p in pw-play paplay aplay; do
-    command -v "$p" >/dev/null 2>&1 && { "$p" "$DIR/dasauto.wav" >/dev/null 2>&1 & break; }
+    command -v "$p" >/dev/null 2>&1 && { "$p" "$SND" >/dev/null 2>&1 & return 0; }
   done
-  exit 0
 }
-[ -n "$KITTY_LISTEN_ON" ] && [ -n "$KITTY_WINDOW_ID" ] || bail_with_sound
-command -v kitten >/dev/null 2>&1 || bail_with_sound
 
-TTY_DEV="${DAS_AUTO_TTY:-$(kq ls | python3 -c '
-import json,sys,os
-try: d=json.load(sys.stdin)
-except Exception: sys.exit(0)
-wid=os.environ.get("KITTY_WINDOW_ID")
-for osw in d:
-  for t in osw.get("tabs",[]):
-    for w in t.get("windows",[]):
-      if str(w.get("id"))==wid:
-        for pr in w.get("foreground_processes",[]):
-          try: link=os.readlink("/proc/%d/fd/0"%pr["pid"])
-          except OSError: continue
-          if link.startswith("/dev/pts/"):
-            print(link); sys.exit(0)
-')}"
-[ -n "$TTY_DEV" ] && [ -w "$TTY_DEV" ] || bail_with_sound
-exec 3>"$TTY_DEV" || bail_with_sound
+# Where to draw, and whether we may. probe.py handles the terminal-specific
+# part: kitty and tmux can both be asked to read their own screen, anything
+# else cannot, and painting rows we never read is not something to do to
+# somebody's terminal uninvited.
+command -v python3 >/dev/null 2>&1 || { play_sound; exit 0; }
+eval "$(python3 "$DIR/probe.py" 2>/dev/null)"
 
-read -r COLS ROWS <<< "$(kq ls | python3 -c '
-import json,sys,os
-d=json.load(sys.stdin); wid=os.environ.get("KITTY_WINDOW_ID")
-for osw in d:
-  for t in osw.get("tabs",[]):
-    for w in t.get("windows",[]):
-      if str(w.get("id"))==wid:
-        print(w.get("columns") or 80, w.get("lines") or 24); sys.exit(0)
-print(80,24)')"
-[ -z "$COLS" ] && COLS=80
+case "${MODE:-sound}" in
+  kitty|tmux|blind) : ;;
+  *) play_sound; exit 0 ;;
+esac
+[ -n "$TTY" ] && [ -w "$TTY" ] || { play_sound; exit 0; }
+[ -n "$RULE_TOP" ] && [ -n "$RULE_BOT" ] || { play_sound; exit 0; }
 
-# Find the prompt box rules: the last two rows that are essentially a solid
-# run of ─. If they can't be found, there is nothing safe to paint on.
-read -r RULE_TOP RULE_BOT <<< "$(kq get-text --extent=screen | python3 -c "
-import sys
-lines=sys.stdin.read().split('\n')
-hits=[i+1 for i,l in enumerate(lines) if l.count('─') > max(20, ${COLS}//3)]
-print(hits[-2], hits[-1]) if len(hits)>=2 else print('','')
-")"
-[ -n "$RULE_TOP" ] && [ -n "$RULE_BOT" ] || bail_with_sound
+exec 3>"$TTY" || { play_sound; exit 0; }
 
-# Claude Code draws these rules in #888888. The fade has to land exactly
-# there or the rules snap colour when the animation hands back, so colours
-# are truecolor triples rather than the nearest 256-palette approximation.
 ORANGE="255;135;0"
 RULE_RGB="136;136;136"
 
@@ -90,8 +57,14 @@ GPROFILE=(214 220 228 231 228 220 214)
 
 restore() {
   printf '\0338\033[?25h\033[0m' >&3
-  kq resize-window --increment 1  >/dev/null
-  kq resize-window --increment -1 >/dev/null
+  # Make the TUI repaint from its own model. SIGWINCH to the process that
+  # owns this pts works on any terminal; the kitty resize is a belt-and-
+  # braces nudge where it happens to be available.
+  [ -n "$PID" ] && kill -WINCH "$PID" 2>/dev/null
+  if [ "$MODE" = "kitty" ] && [ -n "$KITTY_LISTEN_ON" ]; then
+    kitten @ --to "$KITTY_LISTEN_ON" resize-window --increment 1  >/dev/null 2>&1
+    kitten @ --to "$KITTY_LISTEN_ON" resize-window --increment -1 >/dev/null 2>&1
+  fi
   exec 3>&-
 }
 trap restore EXIT INT TERM

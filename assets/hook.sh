@@ -45,6 +45,12 @@ fi
 printf '%s' "$NOW" > "$LOCK"
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-setsid bash "$DIR/intro-band.sh" >/dev/null 2>&1 < /dev/null &
+
+# Resolve the terminal HERE, while this process still has the agent as an
+# ancestor. setsid detaches the animation into its own session, so by the
+# time it runs the parent chain no longer leads anywhere.
+eval "$(python3 "$DIR/probe.py" $$ 2>/dev/null | grep -E '^(TTY|PID)=')"
+DAS_AUTO_TTY="${TTY:-}" DAS_AUTO_PID="${PID:-}" \
+  setsid bash "$DIR/intro-band.sh" >/dev/null 2>&1 < /dev/null &
 
 exit 0
