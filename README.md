@@ -3,7 +3,7 @@
   Das Auto
 </h1>
 
-<p align="center"><strong>Becomes your replacement the moment you leave.</strong></p>
+<p align="center"><strong>Becomes your <em>replacement</em> the moment you leave.</strong></p>
 
 <p align="center">
   A Claude Code skill for the moment you walk away.
