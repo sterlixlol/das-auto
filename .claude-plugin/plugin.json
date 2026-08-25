@@ -1,0 +1,25 @@
+{
+  "name": "das-auto",
+  "description": "Autonomous handoff for when you leave mid-session: harvests the obligations you mentioned but never assigned, inventories the machine for capabilities, and classifies every action by blast radius before taking it.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Stefan Selakov",
+    "url": "https://github.com/sterlixlol"
+  },
+  "homepage": "https://github.com/sterlixlol/das-auto",
+  "license": "MIT",
+  "keywords": ["autonomy", "handoff", "unattended", "agent", "claude-code"],
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/assets/hook.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

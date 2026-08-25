@@ -174,6 +174,15 @@ your own machine as safe. Fixed.
 
 ## Install
 
+**As a plugin** — one line, brings the ignition sequence with it:
+
+```
+/plugin marketplace add sterlixlol/das-auto
+/plugin install das-auto@das-auto
+```
+
+**Or as a plain skill** — no hook, no animation, just the behaviour:
+
 ```bash
 git clone https://github.com/sterlixlol/das-auto ~/.claude/skills/das-auto
 ```
