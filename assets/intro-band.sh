@@ -33,7 +33,7 @@ command -v python3 >/dev/null 2>&1 || { play_sound; exit 0; }
 eval "$(python3 "$DIR/probe.py" 2>/dev/null)"
 
 case "${MODE:-sound}" in
-  kitty|tmux|blind) : ;;
+  kitty|konsole|tmux|blind) : ;;
   *) play_sound; exit 0 ;;
 esac
 [ -n "$TTY" ] && [ -w "$TTY" ] || { play_sound; exit 0; }
