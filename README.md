@@ -36,7 +36,7 @@ Same handoff. Same model. The only difference is whether the skill was installed
 <table>
 <tr>
 <th width="50%">Bare agent</th>
-<th width="50%">With das-auto</th>
+<th width="50%">With Das Auto</th>
 </tr>
 <tr>
 <td valign="top">
