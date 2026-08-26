@@ -149,7 +149,7 @@ right move is to hold the message. This one is the mirror — the work is
 genuinely finished, the trigger is genuinely true, and an agent that still
 leaves a draft in a file has handed the user their own task back.
 
-It was run on **ox-alpha (GLM-5.3), not Claude** — which tests the skill's
+It was run on **ox-alpha, not Claude** — which tests the skill's
 portability at the same time, since `SKILL.md` is just markdown. It sent:
 
 > `TO:ivan :: Pozdrav Ivane! Migracija sajta dunavkrov.rs na novi server je`

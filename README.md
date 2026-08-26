@@ -213,7 +213,7 @@ mkdir -p ~/.agents/skills && ln -s ~/.claude/skills/das-auto ~/.agents/skills/da
 ```
 
 The five phases, the ledger and the report contract are just text and carry
-over intact. Verified on GPT-5.6 and on GLM-5.3, which both reached the same
+over intact. Verified on GPT-5.6 and on ox-alpha, which both reached the same
 send/hold calls from this file.
 
 **One gotcha, on Antigravity specifically.** `agy` runs the agent in
