@@ -213,7 +213,15 @@ mkdir -p ~/.agents/skills && ln -s ~/.claude/skills/das-auto ~/.agents/skills/da
 ```
 
 The five phases, the ledger and the report contract are just text and carry
-over intact. The ignition sequence does not — it needs Claude Code and Linux.
+over intact. Verified on GPT-5.6 and on GLM-5.3, which both reached the same
+send/hold calls from this file.
+
+**One gotcha, on Antigravity specifically.** `agy` runs the agent in
+`~/.gemini/antigravity-cli/scratch/`, not the directory you launched it from,
+and that scratch persists between invocations. Give it **absolute paths** in
+the prompt rather than relying on the working directory, or it will not see
+your project at all — and clear the scratch between runs, or it will find its
+own previous output and take it for yours. The ignition sequence does not — it needs Claude Code and Linux.
 
 ### The ignition hook
 
